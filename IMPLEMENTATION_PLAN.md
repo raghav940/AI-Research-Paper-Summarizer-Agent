@@ -19,13 +19,13 @@
 - [ ] Implement `/summarize` endpoint with prompts
 
 ## Phase 4: Frontend Development
-- [ ] Build Landing Page UI
+- [x] Build Landing Page UI
 - [ ] Build Results Page UI
 - [ ] Connect Frontend forms to Backend APIs
 
 ## Phase 5: 3D UI Development
-- [ ] Integrate floating AI sphere using React Three Fiber
-- [ ] Add Framer Motion transitions and glassmorphism styling
+- [x] Integrate floating AI sphere using React Three Fiber
+- [x] Add Framer Motion transitions and glassmorphism styling
 
 ## Phase 6: Notion Integration
 - [ ] Setup backend `/save-notion` route
