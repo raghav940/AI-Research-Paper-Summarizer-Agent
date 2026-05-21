@@ -66,7 +66,7 @@ const History = () => {
 
   useEffect(() => {
     const fetchHistory = async () => {
-      const API_URL = import.meta.env.VITE_API_BASE_URL || 'http://127.0.0.1:5001';
+      const API_URL = import.meta.env.VITE_API_BASE_URL || (import.meta.env.DEV ? 'http://127.0.0.1:5001' : '');
       try {
         const response = await axios.get(`${API_URL}/api/history`);
         setHistoryData(response.data);

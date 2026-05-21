@@ -12,8 +12,12 @@ def create_app():
     # Configure CORS to allow requests from the React frontend
     CORS(app, resources={r"/api/*": {"origins": "*"}})
     
-    # Configure upload folder
-    UPLOAD_FOLDER = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'temp_uploads')
+    # Configure upload folder (Use /tmp for serverless read-only filesystems on Vercel)
+    if os.getenv('VERCEL') == '1':
+        UPLOAD_FOLDER = '/tmp/temp_uploads'
+    else:
+        UPLOAD_FOLDER = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'temp_uploads')
+        
     if not os.path.exists(UPLOAD_FOLDER):
         os.makedirs(UPLOAD_FOLDER)
     app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
@@ -43,6 +47,7 @@ def create_app():
         
     return app
 
+app = create_app()
+
 if __name__ == '__main__':
-    app = create_app()
     app.run(debug=True, port=5001)
