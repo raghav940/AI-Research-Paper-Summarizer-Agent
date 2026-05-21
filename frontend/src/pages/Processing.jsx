@@ -39,15 +39,16 @@ const Processing = () => {
     }, 500);
 
     const processData = async () => {
+      const API_URL = import.meta.env.VITE_API_BASE_URL || 'http://127.0.0.1:5001';
       try {
         let resultData;
         if (arxivUrl) {
-          const res = await axios.post('http://127.0.0.1:5001/api/summarize-arxiv', { url: arxivUrl });
+          const res = await axios.post(`${API_URL}/api/summarize-arxiv`, { url: arxivUrl });
           resultData = res.data;
         } else if (file) {
           const formData = new FormData();
           formData.append('file', file);
-          const uploadRes = await axios.post('http://127.0.0.1:5001/api/upload', formData, {
+          const uploadRes = await axios.post(`${API_URL}/api/upload`, formData, {
             headers: { 'Content-Type': 'multipart/form-data' }
           });
           const text = uploadRes.data.text;
@@ -59,7 +60,7 @@ const Processing = () => {
             url: ""
           };
           
-          const summarizeRes = await axios.post('http://127.0.0.1:5001/api/summarize', { 
+          const summarizeRes = await axios.post(`${API_URL}/api/summarize`, { 
             text: text,
             metadata: metadataObj
           });
