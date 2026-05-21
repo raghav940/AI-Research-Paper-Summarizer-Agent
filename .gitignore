@@ -1,0 +1,87 @@
+# Dependency directories
+node_modules/
+frontend/node_modules/
+backend/venv/
+
+# Environment files (secrets)
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+backend/.env
+backend/.env.local
+
+# Temporary uploads and testing files
+test_paper.pdf
+backend/temp_uploads/*
+!backend/temp_uploads/.gitkeep
+
+# Python files
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Python Virtual Environments
+.env/
+venv/
+ENV/
+env/
+pythonenv/
+
+# Pytest / Cache directories
+.cache/
+.pytest_cache/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.log
+.hypothesis/
+.ruamel_yaml_directory/
+
+# Frontend build outputs
+dist-ssr/
+frontend/dist/
+out/
+.next/
+
+# IDE / Editor config
+.vscode/
+!.vscode/extensions.json
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# OS temp files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db

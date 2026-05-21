@@ -36,7 +36,7 @@ const Hero = () => {
           <div className="flex flex-col sm:flex-row items-center gap-4">
             <button className="group relative w-full sm:w-auto flex items-center justify-center space-x-2 bg-white text-black px-8 py-4 rounded-full font-semibold overflow-hidden transition-transform hover:scale-105 active:scale-95 shadow-[0_0_40px_rgba(255,255,255,0.2)]">
               <FileText className="w-5 h-5" />
-              <span>Upload Paper</span>
+              <span>Upload Research Paper</span>
               <div className="absolute inset-0 bg-white/20 group-hover:translate-x-full transition-transform duration-500 -skew-x-12 -translate-x-full" />
             </button>
             

@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { BrainCircuit, Settings, Home, LayoutDashboard, Sparkles } from 'lucide-react';
 
@@ -46,9 +47,9 @@ const Navbar = () => {
           <button className="hidden md:block px-4 py-2 text-sm font-medium text-gray-300 hover:text-white transition-colors">
             Sign In
           </button>
-          <button className="px-5 py-2 text-sm font-medium bg-white text-black rounded-full hover:bg-gray-200 transition-colors shadow-[0_0_15px_rgba(255,255,255,0.3)]">
+          <Link to="/dashboard" className="px-5 py-2 text-sm font-medium bg-white text-black rounded-full hover:bg-gray-200 transition-colors shadow-[0_0_15px_rgba(255,255,255,0.3)]">
             Get Started
-          </button>
+          </Link>
         </div>
       </div>
     </motion.nav>
