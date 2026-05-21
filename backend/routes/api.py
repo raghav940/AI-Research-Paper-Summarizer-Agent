@@ -111,9 +111,8 @@ def get_history():
         papers = Paper.query.order_by(Paper.created_at.desc()).all()
         return jsonify([paper.to_dict() for paper in papers]), 200
     except Exception as e:
-        import traceback
-        traceback.print_exc()
-        return jsonify({"error": str(e)}), 500
+        print(f"Warning: Failed to fetch history. {e}")
+        return jsonify([]), 200
 
 @api_bp.route('/history/<int:paper_id>', methods=['GET'])
 def get_paper(paper_id):
@@ -122,7 +121,7 @@ def get_paper(paper_id):
         paper = Paper.query.get_or_404(paper_id)
         return jsonify(paper.to_dict()), 200
     except Exception as e:
-        return jsonify({"error": str(e)}), 500
+        return jsonify({"error": "Database not connected or record not found"}), 404
 
 @api_bp.route('/notion', methods=['POST'])
 def sync_notion():
