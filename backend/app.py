@@ -9,8 +9,14 @@ load_dotenv()
 def create_app():
     app = Flask(__name__)
     
-    # Configure CORS to allow requests from the React frontend
-    CORS(app, resources={r"/api/*": {"origins": "*"}})
+    # Configure CORS — reads from CORS_ORIGINS env var (comma-separated list).
+    # Falls back to the deployed Vercel frontend URL if not set.
+    raw_origins = os.getenv(
+        'CORS_ORIGINS',
+        'https://ai-research-paper-summarizer-agent.vercel.app'
+    )
+    allowed_origins = [o.strip() for o in raw_origins.split(',')]
+    CORS(app, resources={r"/api/*": {"origins": allowed_origins}})
     
     # Configure upload folder (Use /tmp for serverless read-only filesystems on Vercel)
     if os.getenv('VERCEL') == '1':
