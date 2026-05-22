@@ -10,10 +10,10 @@ def create_app():
     app = Flask(__name__)
     
     # Configure CORS — reads from CORS_ORIGINS env var (comma-separated list).
-    # Falls back to the deployed Vercel frontend URL if not set.
+    # Includes localhost for local dev AND the Vercel production URL.
     raw_origins = os.getenv(
         'CORS_ORIGINS',
-        'https://ai-research-paper-summarizer-agent.vercel.app'
+        'http://localhost:5173,http://127.0.0.1:5173,https://ai-research-paper-summarizer-agent.vercel.app'
     )
     allowed_origins = [o.strip() for o in raw_origins.split(',')]
     CORS(app, resources={r"/api/*": {"origins": allowed_origins}})
