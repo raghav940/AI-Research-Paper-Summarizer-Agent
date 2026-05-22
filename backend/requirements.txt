@@ -74,5 +74,6 @@ zstandard==0.25.0
 gunicorn==21.2.0
 g4f==0.2.7.2
 Flask-SQLAlchemy==3.1.1
-psycopg2-binary==2.9.9
+psycopg2-binary==2.9.9; sys_platform == "linux"
+pg8000==1.31.2
 
