@@ -85,8 +85,9 @@ const Processing = () => {
         }, 1000);
       } catch (error) {
         clearInterval(interval);
+        const msg = error?.response?.data?.error || error?.message || 'Unknown error';
         console.error("Error processing paper:", error);
-        alert("Failed to process the paper. Check your API keys and try again.");
+        alert(`Processing failed: ${msg}`);
         navigate('/');
       }
     };
