@@ -84,9 +84,12 @@ def summarize_paper():
         metadata = data.get('metadata', {})
         if metadata:
             try:
+                authors_data = metadata.get('authors', 'Unknown Authors')
+                if isinstance(authors_data, list):
+                    authors_data = ', '.join(authors_data)
                 new_paper = Paper(
                     title=metadata.get('title', 'Unknown Title'),
-                    authors=metadata.get('authors', 'Unknown Authors'),
+                    authors=authors_data,
                     publication_date=metadata.get('date', ''),
                     field=metadata.get('field', 'General'),
                     arxiv_url=metadata.get('url', ''),
@@ -169,9 +172,12 @@ def summarize_arxiv_direct():
         
         # 4. Save to database
         try:
+            authors_data = paper_data['authors']
+            if isinstance(authors_data, list):
+                authors_data = ', '.join(authors_data)
             new_paper = Paper(
                 title=paper_data['title'],
-                authors=paper_data['authors'],
+                authors=authors_data,
                 publication_date=paper_data['date'],
                 field=paper_data['field'],
                 arxiv_url=paper_data['url'],

@@ -8,6 +8,6 @@ def extract_text_from_pdf(filepath: str) -> str:
     pages = loader.load()
     
     # Combine text from all pages
-    full_text = "\\n\\n".join([page.page_content for page in pages])
+    full_text = "\n\n".join([page.page_content for page in pages])
     
     return full_text

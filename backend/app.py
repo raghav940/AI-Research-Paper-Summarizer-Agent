@@ -26,9 +26,16 @@ def create_app():
     from routes.api import api_bp
     app.register_blueprint(api_bp, url_prefix='/api')
     
-    # Configure Database (PostgreSQL)
-    # Default to localhost postgres if not provided in .env
-    app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL', 'postgresql://localhost/postgres')
+    # Configure Database (PostgreSQL or local SQLite fallback)
+    database_url = os.getenv('DATABASE_URL')
+    if not database_url:
+        db_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'papers.db')
+        database_url = f"sqlite:///{db_path}"
+        print(f"Database configuration: No DATABASE_URL found. Using local SQLite database at: {db_path}")
+    else:
+        print(f"Database configuration: Using DATABASE_URL connection.")
+
+    app.config['SQLALCHEMY_DATABASE_URI'] = database_url
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     
     from models import db
@@ -38,8 +45,22 @@ def create_app():
     with app.app_context():
         try:
             db.create_all()
+            print("Database tables initialized successfully.")
         except Exception as e:
-            print(f"Warning: Failed to connect to PostgreSQL. {e}")
+            print(f"Warning: Failed to initialize primary database. {e}")
+            if not database_url.startswith("sqlite"):
+                db_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'papers.db')
+                fallback_url = f"sqlite:///{db_path}"
+                print(f"Attempting to fallback to local SQLite database: {fallback_url}")
+                app.config['SQLALCHEMY_DATABASE_URI'] = fallback_url
+                # Clear cached engines to force re-connection with fallback SQLite
+                if hasattr(db, 'engines'):
+                    db.engines.clear()
+                try:
+                    db.create_all()
+                    print("Fallback SQLite database initialized successfully.")
+                except Exception as fallback_err:
+                    print(f"Critical: Failed to initialize fallback SQLite database. {fallback_err}")
     
     @app.route('/health', methods=['GET'])
     def health_check():

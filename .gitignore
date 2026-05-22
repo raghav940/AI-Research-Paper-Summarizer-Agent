@@ -85,3 +85,10 @@ out/
 .Trashes
 ehthumbs.db
 Thumbs.db
+
+# Databases & local persistent stores
+*.db
+*.sqlite
+*.sqlite3
+backend/papers.db
+

@@ -29,20 +29,14 @@ The JSON MUST have exactly these keys:
 PAPER TEXT:
 {processed_text}
 """
-        # 3. Request free generation via Pollinations.ai (No API Key Required!)
-        response = requests.post(
-            "https://text.pollinations.ai/",
-            json={
-                "messages": [{"role": "user", "content": prompt}],
-                "jsonMode": True
-            },
-            timeout=60
+        # 3. Request free generation via Pollinations.ai (using g4f Client)
+        import g4f
+        content = g4f.ChatCompletion.create(
+            model='openai',
+            provider=g4f.Provider.PollinationsAI,
+            messages=[{"role": "user", "content": prompt}],
+            jsonMode=True
         )
-        
-        if response.status_code != 200:
-            raise ValueError(f"Pollinations AI returned status {response.status_code}")
-            
-        content = response.text
         
         # 4. Clean up potential markdown formatting if the model disobeys
         content = content.replace("```json", "").replace("```", "").strip()

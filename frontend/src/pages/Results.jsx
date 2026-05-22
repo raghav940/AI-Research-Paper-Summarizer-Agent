@@ -48,7 +48,7 @@ const Results = () => {
 
   const paperData = {
     title: metadata.title,
-    authors: metadata.authors,
+    authors: Array.isArray(metadata.authors) ? metadata.authors.join(', ') : metadata.authors || "Unknown Authors",
     date: metadata.published,
     field: metadata.categories,
     tabs: {
@@ -232,15 +232,26 @@ ${paperData.tabs.insights.content}
               <div className="flex items-center gap-3 shrink-0">
                 <button 
                   onClick={handleShare}
+                  title="Share Summary"
                   className="p-3 glass rounded-xl hover:bg-white/10 hover:text-white text-gray-400 transition-colors group/btn"
                 >
                   <Share2 className="w-5 h-5 group-hover/btn:scale-110 transition-transform" />
                 </button>
                 <button 
                   onClick={handleDownload}
-                  className="p-3 glass rounded-xl hover:bg-white/10 hover:text-white text-gray-400 transition-colors group/btn"
+                  title="Download Markdown Summary"
+                  className="p-3 glass rounded-xl hover:bg-white/10 hover:text-white text-gray-400 transition-colors group/btn flex items-center gap-2"
                 >
-                  <Download className="w-5 h-5 group-hover/btn:scale-110 transition-transform" />
+                  <FileText className="w-5 h-5 group-hover/btn:scale-110 transition-transform text-neonBlue" />
+                  <span className="text-xs font-semibold hidden md:inline">Download MD</span>
+                </button>
+                <button 
+                  onClick={() => window.print()}
+                  title="Download PDF Summary"
+                  className="p-3 glass rounded-xl hover:bg-white/10 hover:text-white text-gray-400 transition-colors group/btn flex items-center gap-2"
+                >
+                  <Download className="w-5 h-5 group-hover/btn:scale-110 transition-transform text-primary" />
+                  <span className="text-xs font-semibold hidden md:inline">Download PDF</span>
                 </button>
                 <button 
                   onClick={handleSaveToNotion}
@@ -311,10 +322,91 @@ ${paperData.tabs.insights.content}
 
         </motion.div>
       </main>
+
+      {/* Hidden PDF/Print view containing each and every slide formatted for standard printing */}
+      <div id="printable-summary-wrapper">
+        <div className="print-header">
+          <h1 className="print-title">{paperData.title}</h1>
+          <div className="print-meta"><strong>Authors:</strong> {paperData.authors}</div>
+          <div className="print-meta"><strong>Date:</strong> {paperData.date}</div>
+          <div className="print-meta"><strong>Field:</strong> {paperData.field}</div>
+          {metadata.url && <div className="print-meta"><strong>ArXiv URL:</strong> {metadata.url}</div>}
+        </div>
+        
+        {Object.entries(paperData.tabs).map(([key, tab]) => (
+          <div key={key} className="print-section">
+            <h2 className="print-section-title">{tab.label}</h2>
+            <div className="print-section-content">{tab.content}</div>
+          </div>
+        ))}
+      </div>
       
       <style dangerouslySetInnerHTML={{__html: `
         .hide-scrollbar::-webkit-scrollbar { display: none; }
         .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+        #printable-summary-wrapper {
+          display: none;
+        }
+
+        @media print {
+          /* Force page background to white and text to black */
+          body {
+            background-color: #ffffff !important;
+            color: #000000 !important;
+          }
+
+          /* Hide UI wrappers using display: none rather than visibility: hidden on body */
+          aside, main, nav, button, .pointer-events-none {
+            display: none !important;
+          }
+
+          /* Show the printable container */
+          #printable-summary-wrapper {
+            display: block !important;
+            position: relative !important;
+            width: 100% !important;
+            color: #000000 !important;
+            background: #ffffff !important;
+            padding: 10px !important;
+            font-family: 'Inter', system-ui, sans-serif !important;
+          }
+          .print-header {
+            border-bottom: 3px solid #111111 !important;
+            padding-bottom: 20px !important;
+            margin-bottom: 30px !important;
+          }
+          .print-title {
+            font-size: 28px !important;
+            font-weight: 800 !important;
+            color: #000000 !important;
+            margin-bottom: 12px !important;
+            line-height: 1.25 !important;
+          }
+          .print-meta {
+            font-size: 13px !important;
+            color: #4a5568 !important;
+            margin-bottom: 6px !important;
+          }
+          .print-section {
+            margin-bottom: 35px !important;
+            page-break-inside: avoid !important;
+          }
+          .print-section-title {
+            font-size: 18px !important;
+            font-weight: 700 !important;
+            color: #1a202c !important;
+            border-bottom: 1px solid #cbd5e0 !important;
+            padding-bottom: 6px !important;
+            margin-bottom: 12px !important;
+          }
+          .print-section-content {
+            font-size: 13px !important;
+            line-height: 1.6 !important;
+            color: #2d3748 !important;
+            white-space: pre-wrap !important;
+          }
+        }
       `}} />
     </div>
   );

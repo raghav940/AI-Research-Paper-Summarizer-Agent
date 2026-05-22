@@ -30,11 +30,32 @@ const Toggle = ({ enabled, setEnabled }) => (
 );
 
 const Settings = () => {
-  const [model, setModel] = useState('claude-3-opus');
-  const [notionConnected, setNotionConnected] = useState(true);
-  const [autoSave, setAutoSave] = useState(true);
-  const [notifications, setNotifications] = useState(true);
-  const [emailAlerts, setEmailAlerts] = useState(false);
+  const [model, setModel] = useState(() => localStorage.getItem('ai-model') || 'claude-3-opus');
+  const [notionConnected, setNotionConnected] = useState(() => {
+    const saved = localStorage.getItem('notion-connected');
+    return saved !== null ? JSON.parse(saved) : true;
+  });
+  const [autoSave, setAutoSave] = useState(() => {
+    const saved = localStorage.getItem('auto-save');
+    return saved !== null ? JSON.parse(saved) : true;
+  });
+  const [notifications, setNotifications] = useState(() => {
+    const saved = localStorage.getItem('notifications');
+    return saved !== null ? JSON.parse(saved) : true;
+  });
+  const [emailAlerts, setEmailAlerts] = useState(() => {
+    const saved = localStorage.getItem('email-alerts');
+    return saved !== null ? JSON.parse(saved) : false;
+  });
+
+  const handleSave = () => {
+    localStorage.setItem('ai-model', model);
+    localStorage.setItem('notion-connected', JSON.stringify(notionConnected));
+    localStorage.setItem('auto-save', JSON.stringify(autoSave));
+    localStorage.setItem('notifications', JSON.stringify(notifications));
+    localStorage.setItem('email-alerts', JSON.stringify(emailAlerts));
+    alert('Settings saved successfully!');
+  };
 
   return (
     <div className="min-h-screen bg-background text-white flex">
@@ -189,7 +210,10 @@ const Settings = () => {
           </div>
           
           <div className="pt-6 border-t border-white/10 flex justify-end">
-             <button className="relative group/btn bg-white text-black px-8 py-3 rounded-xl font-bold transition-transform hover:scale-105 active:scale-95 shadow-[0_0_20px_rgba(255,255,255,0.2)]">
+             <button 
+                onClick={handleSave}
+                className="relative group/btn bg-white text-black px-8 py-3 rounded-xl font-bold transition-transform hover:scale-105 active:scale-95 shadow-[0_0_20px_rgba(255,255,255,0.2)]"
+             >
                 Save Changes
              </button>
           </div>
