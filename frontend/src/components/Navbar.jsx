@@ -4,6 +4,8 @@ import { motion } from 'framer-motion';
 import { BrainCircuit, Settings, Home, LayoutDashboard, Sparkles } from 'lucide-react';
 
 const Navbar = () => {
+  const user = JSON.parse(localStorage.getItem('user') || 'null');
+
   return (
     <motion.nav 
       initial={{ y: -100 }}
@@ -44,9 +46,18 @@ const Navbar = () => {
 
         {/* CTA */}
         <div className="flex items-center space-x-4">
-          <button className="hidden md:block px-4 py-2 text-sm font-medium text-gray-300 hover:text-white transition-colors">
-            Sign In
-          </button>
+          {user ? (
+            <Link to="/dashboard" className="hidden md:flex items-center space-x-2 px-4 py-2 text-sm font-medium text-gray-300 hover:text-white transition-colors">
+              <div className="w-6 h-6 rounded-full bg-primary/20 text-primary flex items-center justify-center font-bold">
+                {user.email[0].toUpperCase()}
+              </div>
+              <span>Dashboard</span>
+            </Link>
+          ) : (
+            <Link to="/auth" className="hidden md:block px-4 py-2 text-sm font-medium text-gray-300 hover:text-white transition-colors">
+              Sign In
+            </Link>
+          )}
           <Link to="/dashboard" className="px-5 py-2 text-sm font-medium bg-white text-black rounded-full hover:bg-gray-200 transition-colors shadow-[0_0_15px_rgba(255,255,255,0.3)]">
             Get Started
           </Link>

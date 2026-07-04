@@ -7,8 +7,10 @@ from services.pdf_service import extract_text_from_pdf
 from services.arxiv_service import fetch_arxiv_paper
 from services.ai_service import generate_summary
 from services.notion_service import save_to_notion
-from models import db, Paper
-
+from models import db, Paper, User
+import jwt
+from werkzeug.security import generate_password_hash, check_password_hash
+from datetime import datetime, timedelta
 api_bp = Blueprint('api', __name__)
 
 ALLOWED_EXTENSIONS = {'pdf'}
@@ -190,5 +192,54 @@ def summarize_arxiv_direct():
             db.session.rollback()
         
         return jsonify(response_data), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+JWT_SECRET = os.getenv('JWT_SECRET', 'super-secret-jwt-key-for-local-dev-123')
+
+@api_bp.route('/auth/signup', methods=['POST'])
+def signup():
+    data = request.get_json()
+    if not data or 'email' not in data or 'password' not in data:
+        return jsonify({"error": "Missing email or password"}), 400
+        
+    if User.query.filter_by(email=data['email']).first():
+        return jsonify({"error": "Email already exists"}), 409
+        
+    try:
+        new_user = User(
+            email=data['email'],
+            password_hash=generate_password_hash(data['password'])
+        )
+        db.session.add(new_user)
+        db.session.commit()
+        
+        token = jwt.encode({
+            'user_id': new_user.id,
+            'exp': datetime.utcnow() + timedelta(days=7)
+        }, JWT_SECRET, algorithm='HS256')
+        
+        return jsonify({"token": token, "user": new_user.to_dict()}), 201
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"error": str(e)}), 500
+
+@api_bp.route('/auth/login', methods=['POST'])
+def login():
+    data = request.get_json()
+    if not data or 'email' not in data or 'password' not in data:
+        return jsonify({"error": "Missing email or password"}), 400
+        
+    user = User.query.filter_by(email=data['email']).first()
+    if not user or not check_password_hash(user.password_hash, data['password']):
+        return jsonify({"error": "Invalid email or password"}), 401
+        
+    try:
+        token = jwt.encode({
+            'user_id': user.id,
+            'exp': datetime.utcnow() + timedelta(days=7)
+        }, JWT_SECRET, algorithm='HS256')
+        
+        return jsonify({"token": token, "user": user.to_dict()}), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 500

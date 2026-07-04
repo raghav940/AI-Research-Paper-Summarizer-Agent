@@ -8,7 +8,9 @@ import {
   History, 
   Bookmark, 
   Settings,
-  BrainCircuit
+  BrainCircuit,
+  LogOut,
+  LogIn
 } from 'lucide-react';
 
 const SidebarItem = ({ icon: Icon, label, to }) => {
@@ -31,6 +33,14 @@ const SidebarItem = ({ icon: Icon, label, to }) => {
 };
 
 const Sidebar = () => {
+  const user = JSON.parse(localStorage.getItem('user') || 'null');
+  
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    window.location.href = '/';
+  };
+
   return (
     <motion.aside 
       initial={{ x: -100, opacity: 0 }}
@@ -57,20 +67,34 @@ const Sidebar = () => {
         <SidebarItem icon={Bookmark} label="Saved" to="/dashboard#saved" />
       </nav>
 
-      {/* Bottom Settings */}
+      {/* Bottom Settings & User */}
       <div className="mt-auto">
         <SidebarItem icon={Settings} label="Settings" to="/settings" />
         
-        {/* Storage Widget */}
-        <div className="mt-6 p-4 rounded-xl bg-white/5 border border-white/10">
-          <div className="flex justify-between items-center mb-2">
-            <span className="text-xs text-gray-400">Monthly Usage</span>
-            <span className="text-xs text-primary font-bold">45%</span>
+        {user ? (
+          <div className="mt-6 pt-6 border-t border-white/10 flex flex-col space-y-4">
+            <div className="flex items-center space-x-3">
+              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-neonPurple to-neonBlue flex items-center justify-center font-bold text-white shadow-[0_0_15px_rgba(139,92,246,0.3)]">
+                {user.email[0].toUpperCase()}
+              </div>
+              <div className="overflow-hidden">
+                <p className="text-sm font-medium text-white truncate w-full">{user.email}</p>
+                <p className="text-xs text-gray-400">Pro Plan</p>
+              </div>
+            </div>
+            <button 
+              onClick={handleLogout}
+              className="w-full flex items-center space-x-3 px-4 py-2 rounded-xl text-red-400 hover:text-white hover:bg-red-500/20 transition-colors"
+            >
+              <LogOut className="w-5 h-5" />
+              <span className="font-medium text-sm">Logout</span>
+            </button>
           </div>
-          <div className="h-1.5 w-full bg-gray-800 rounded-full overflow-hidden">
-            <div className="h-full bg-gradient-to-r from-neonPurple to-neonBlue w-[45%] rounded-full" />
+        ) : (
+          <div className="mt-6 pt-6 border-t border-white/10">
+            <SidebarItem icon={LogIn} label="Sign In" to="/auth" />
           </div>
-        </div>
+        )}
       </div>
     </motion.aside>
   );

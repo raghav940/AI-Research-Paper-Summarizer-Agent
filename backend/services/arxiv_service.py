@@ -11,6 +11,17 @@ def extract_arxiv_id(url: str) -> str:
     match = re.search(r'(\d{4}\.\d{4,5}(v\d+)?)', url)
     if match:
         return match.group(1)
+        
+    # Check for old-style IDs (e.g. quant-ph/0401062)
+    match_old = re.search(r'([a-z\-]+(\.[a-zA-Z\-]+)?/\d{7})', url)
+    if match_old:
+        return match_old.group(1)
+        
+    # If it's a web URL but not from arxiv, raise a clear error
+    if "http://" in url or "https://" in url:
+        if "arxiv.org" not in url:
+            raise ValueError("The provided URL is not a valid ArXiv link. The 'ArXiv Search' feature only works with arxiv.org links (e.g., https://arxiv.org/abs/2305.12345). For other websites like IEEE, please download the PDF and use the 'Upload' tab.")
+            
     return url
 
 def fetch_arxiv_paper(url_or_id: str, download_dir: str) -> dict:

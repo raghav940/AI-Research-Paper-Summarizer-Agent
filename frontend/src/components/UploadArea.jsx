@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { FileUp, Link as LinkIcon, Sparkles, Loader2, CheckCircle2 } from 'lucide-react';
 
 import { useNavigate } from 'react-router-dom';
+import { setStoredFile } from '../utils/fileStore';
 
 const UploadArea = () => {
   const navigate = useNavigate();
@@ -59,7 +60,8 @@ const UploadArea = () => {
           clearInterval(interval);
           setTimeout(() => {
             setIsUploading(false);
-            navigate('/processing', { state: { file: uploadFile } });
+            setStoredFile(uploadFile);
+            navigate('/processing', { state: { hasFile: true } });
           }, 500);
           return 100;
         }

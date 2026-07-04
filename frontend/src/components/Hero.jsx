@@ -1,6 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { FileText, Link as LinkIcon, ArrowRight } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import GlowingBrain from './GlowingBrain';
 
 const Hero = () => {
@@ -34,17 +35,17 @@ const Hero = () => {
           </p>
 
           <div className="flex flex-col sm:flex-row items-center gap-4">
-            <button className="group relative w-full sm:w-auto flex items-center justify-center space-x-2 bg-white text-black px-8 py-4 rounded-full font-semibold overflow-hidden transition-transform hover:scale-105 active:scale-95 shadow-[0_0_40px_rgba(255,255,255,0.2)]">
+            <Link to="/dashboard" className="group relative w-full sm:w-auto flex items-center justify-center space-x-2 bg-white text-black px-8 py-4 rounded-full font-semibold overflow-hidden transition-transform hover:scale-105 active:scale-95 shadow-[0_0_40px_rgba(255,255,255,0.2)]">
               <FileText className="w-5 h-5" />
               <span>Upload Research Paper</span>
               <div className="absolute inset-0 bg-white/20 group-hover:translate-x-full transition-transform duration-500 -skew-x-12 -translate-x-full" />
-            </button>
+            </Link>
             
-            <button className="group w-full sm:w-auto flex items-center justify-center space-x-2 glass px-8 py-4 rounded-full font-semibold text-white hover:bg-white/10 transition-colors border border-white/20">
+            <Link to="/dashboard" className="group w-full sm:w-auto flex items-center justify-center space-x-2 glass px-8 py-4 rounded-full font-semibold text-white hover:bg-white/10 transition-colors border border-white/20">
               <LinkIcon className="w-5 h-5 text-gray-400 group-hover:text-white transition-colors" />
               <span>Try ArXiv Link</span>
               <ArrowRight className="w-4 h-4 ml-2 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all" />
-            </button>
+            </Link>
           </div>
           
           <div className="mt-8 flex items-center space-x-4 text-sm text-gray-500 font-medium">

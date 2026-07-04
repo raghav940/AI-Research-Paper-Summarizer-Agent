@@ -4,6 +4,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { BrainCircuit, FileSearch, Sparkles, CheckCircle2 } from 'lucide-react';
 import GlowingBrain from '../components/GlowingBrain';
 import axios from 'axios';
+import { getStoredFile } from '../utils/fileStore';
 
 const steps = [
   { id: 1, text: 'Extracting PDF Text', icon: FileSearch },
@@ -23,7 +24,8 @@ const Processing = () => {
     if (hasStarted.current) return;
     hasStarted.current = true;
 
-    const { arxivUrl, file } = location.state || {};
+    const { arxivUrl, hasFile } = location.state || {};
+    const file = hasFile ? getStoredFile() : null;
     
     if (!arxivUrl && !file) {
       navigate('/');

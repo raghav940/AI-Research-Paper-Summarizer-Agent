@@ -8,6 +8,7 @@ import Processing from './pages/Processing';
 import Results from './pages/Results';
 import History from './pages/History';
 import Settings from './pages/Settings';
+import Auth from './pages/Auth';
 
 const LandingPage = () => (
   <>
@@ -31,6 +32,7 @@ function App() {
         
         <Routes>
           <Route path="/" element={<LandingPage />} />
+          <Route path="/auth" element={<Auth />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/processing" element={<Processing />} />
           <Route path="/results" element={<Results />} />

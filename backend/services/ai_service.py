@@ -61,19 +61,38 @@ def _try_pollinations_http(prompt: str) -> str:
 
 def generate_summary(text: str, model_name: str = 'llama3') -> dict:
     """
-    Generates a structured AI summary. Tries g4f first, then direct
+    Generates a structured AI summary. Tries Anthropic first (if key exists), then g4f, then direct
     Pollinations HTTP, then returns a graceful fallback — never crashes.
     """
     prompt = _build_prompt(text)
     processed_text = text[:8000] if len(text) > 8000 else text
     content = None
 
+    # Attempt 0: Anthropic API if key is present
+    anthropic_api_key = os.getenv("ANTHROPIC_API_KEY")
+    if anthropic_api_key and anthropic_api_key != "your_anthropic_api_key_here":
+        try:
+            import anthropic
+            client = anthropic.Anthropic(api_key=anthropic_api_key)
+            message = client.messages.create(
+                model="claude-3-haiku-20240307",
+                max_tokens=4000,
+                messages=[
+                    {"role": "user", "content": prompt}
+                ]
+            )
+            content = message.content[0].text
+            print("Summary generated via Anthropic.")
+        except Exception as e:
+            print(f"Anthropic failed: {e}. Trying g4f...")
+
     # Attempt 1: Modern g4f Client
-    try:
-        content = _try_g4f(prompt)
-        print("Summary generated via g4f Client.")
-    except Exception as e:
-        print(f"g4f Client failed: {e}. Trying direct Pollinations HTTP...")
+    if not content:
+        try:
+            content = _try_g4f(prompt)
+            print("Summary generated via g4f Client.")
+        except Exception as e:
+            print(f"g4f Client failed: {e}. Trying direct Pollinations HTTP...")
 
     # Attempt 2: Direct Pollinations HTTP
     if not content:
@@ -93,6 +112,5 @@ def generate_summary(text: str, model_name: str = 'llama3') -> dict:
             print(f"JSON parse error: {e}. Using fallback.")
 
     # Graceful fallback — always returns valid data
-    snippet = processed_text[:300].replace('\n', ' ').strip()
     return _ensure_keys({}, processed_text)
 

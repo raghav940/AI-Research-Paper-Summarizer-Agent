@@ -13,7 +13,7 @@ def create_app():
     # Includes localhost for local dev AND the Vercel production URL.
     raw_origins = os.getenv(
         'CORS_ORIGINS',
-        'http://localhost:5173,http://127.0.0.1:5173,https://ai-research-paper-summarizer-agent.vercel.app'
+        'http://localhost:5173,http://127.0.0.1:5173,http://localhost:5174,http://127.0.0.1:5174,http://localhost:5175,http://127.0.0.1:5175,https://ai-research-paper-summarizer-agent.vercel.app'
     )
     allowed_origins = [o.strip() for o in raw_origins.split(',')]
     CORS(app, resources={r"/api/*": {"origins": allowed_origins}})
